@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aks-helloworld-v1
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aks-helloworld-v1
+  template:
+    metadata:
+      labels:
+        app: aks-helloworld-v1
+    spec:
+      containers:
+      - name: aks-helloworld-v1
+        image: mcr.microsoft.com/azuredocs/aks-helloworld:v1
+        ports:
+        - containerPort: 80
+        env:
+        - name: TITLE
+          value: "Welcome to Azure Kubernetes Service (AKS) - Release Version 1"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+---
+# service.yml
+apiVersion: v1
+kind: Service
+metadata:
+  name: aks-helloworld-v1
+  namespace: default
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: aks-helloworld-v1
